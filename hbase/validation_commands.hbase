@@ -1,0 +1,22 @@
+# ==========================================================
+# Master Task 6 - HBase Operational Validation
+# ==========================================================
+
+# 1. Confirm table and row count
+list
+count 'retail_events', INTERVAL => 5000
+
+# 2. Sample scan
+scan 'retail_events', {LIMIT => 3}
+
+# 3. Retrieve one exact event
+get 'retail_events', 'ST-BRA-001#9223370252001614807#EVT-00037948'
+
+# 4. Store-oriented prefix scan
+scan 'retail_events', {FILTER => "PrefixFilter('ST-BRA-001#')", COLUMNS => ['transaction:event_timestamp','transaction:transaction_id','product:product_name','sales:final_price'], LIMIT => 5}
+
+# 5. Transaction investigation
+scan 'retail_events', {FILTER => "SingleColumnValueFilter('transaction','transaction_id',=,'binary:TXN-0012661')", COLUMNS => ['transaction:transaction_id','transaction:event_timestamp','product:product_name','sales:quantity','sales:final_price']}
+
+# 6. Product investigation
+scan 'retail_events', {FILTER => "SingleColumnValueFilter('product','product_id',=,'binary:P028')", COLUMNS => ['product:product_id','product:product_name','store:store_id','transaction:event_timestamp','sales:quantity','sales:final_price'], LIMIT => 5}

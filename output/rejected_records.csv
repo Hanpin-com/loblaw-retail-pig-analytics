@@ -1,0 +1,3 @@
+event_id,validation_status,rejection_reason
+EVT-BAD-0001,REJECTED,Missing required field: transaction_id; Invalid timestamp; Invalid quantity
+EVT-BAD-0002,REJECTED,Quantity must be positive; Unit price cannot be negative; Final price cannot be negative; Unknown store; Unknown product
