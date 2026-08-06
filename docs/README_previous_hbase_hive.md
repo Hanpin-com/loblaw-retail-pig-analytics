@@ -1,4 +1,4 @@
-# Loblaw Retail Pig Analytics
+# Loblaw HBase–Hive Retail Analytics
 
 ## Student Information
 
@@ -7,17 +7,6 @@
 - **Course:** Big Data – CPAN 361 – ONA
 - **Project:** HBase–Hive Retail Analytics Assignment
 - **Overall Status:** 12 / 12 Master Tasks Completed
-
----
-
-## Project Continuation
-
-This project extends the previously completed Loblaw HBase and Hive
-analytics assignment.
-
-The current assignment focuses on Apache Pig for data exploration,
-cleaning, transformation, aggregation, ranking, joins, and exporting
-processed datasets to HDFS.
 
 ---
 
