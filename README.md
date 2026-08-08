@@ -2,948 +2,832 @@
 
 ## Student Information
 
-- **Name:** Han-Pin, Hung
+- **Name:** Han-Pin Hung
 - **Student ID:** N01747642
-- **Course:** Big Data – CPAN 361 – ONA
-- **Project:** HBase–Hive Retail Analytics Assignment
-- **Overall Status:** 12 / 12 Master Tasks Completed
+- **Project:** Loblaw Retail Operations and Customer Shopping Analytics Platform
+- **Technology:** Apache Pig, Hadoop HDFS, MapReduce, Docker
 
 ---
 
-## Project Continuation
+## 1. Project Overview
 
-This project extends the previously completed Loblaw HBase and Hive
-analytics assignment.
+This project implements an Apache Pig ETL and analytical pipeline for synthetic Loblaw retail data.
 
-The current assignment focuses on Apache Pig for data exploration,
-cleaning, transformation, aggregation, ranking, joins, and exporting
-processed datasets to HDFS.
+The workflow processes raw retail transaction events stored in HDFS and performs:
 
----
+- Data exploration
+- Data cleaning
+- Data transformation
+- Store, product, and category aggregation
+- Promotion analysis
+- Business ranking
+- Dataset joins and enrichment
+- Processed data export
 
-## Project Overview
-
-This project implements an end-to-end big-data retail analytics workflow using Apache HBase, Apache Hive, Python, Pandas, Docker, and Apache Zeppelin.
-
-The source retail data was first validated using Python. Valid retail event records were then loaded into HBase through a Python ingestion program. Hive was integrated with HBase through an external table to support business analytics across stores, regions, products, categories, payment methods, loyalty status, promotions, transaction dates, and transaction times.
-
-Python was also used to perform transaction-level statistical analysis, including descriptive statistics, transaction-value distribution analysis, and IQR-based outlier detection.
-
-The project concludes with integrated business findings and recommendations based on both HiveQL and Python results.
-
----
-
-## Technologies
-
-- Apache HBase
-- Apache Hive
-- Apache Zeppelin
-- Python
-- Pandas
-- Docker
-- Docker Compose
-- Git
-- GitHub
-
----
-
-## Dataset Summary
-
-The project uses retail transaction data containing:
-
-- **38,143 retail event records**
-- **12,725 unique transactions**
-- Store information
-- Regional information
-- Product information
-- Product categories
-- Transaction quantities
-- Transaction values
-- Payment methods
-- Loyalty indicators
-- Promotion indicators
-- Transaction dates
-- Transaction times
-
-The source and supporting CSV files are stored in the `data/` directory.
-
----
-
-## Project Objectives
-
-The main objectives of this project were to:
-
-1. Validate the source retail dataset
-2. Detect and document malformed records
-3. Design an HBase data model
-4. Design a unique and traceable HBase row key
-5. Create the HBase retail-events table
-6. Establish a Python-to-HBase connection
-7. Load valid retail records into HBase
-8. Validate the HBase records
-9. Integrate Hive with HBase
-10. Perform core and advanced HiveQL analytics
-11. Perform Python statistical analytics
-12. Produce integrated findings and business recommendations
-
----
-
-## Project Workflow
+The main pipeline is:
 
 ```text
-Source CSV Files
-       |
-       v
-Python Data Validation
-       |
-       v
-Malformed Record Handling
-       |
-       v
-HBase Data Model and Row Key
-       |
-       v
-Python-to-HBase Connection
-       |
-       v
-HBase Data Ingestion
-       |
-       v
-HBase Validation
-       |
-       v
-Hive–HBase External Table
-       |
-       v
-Core and Advanced HiveQL Analytics
-       |
-       v
-Transaction Summary Export
-       |
-       v
-Python Statistical Analytics
-       |
-       v
-Integrated Findings and Recommendations
+Raw CSV Files
+     |
+     v
+    HDFS
+     |
+     v
+ Apache Pig
+     |
+     +--> Explore
+     +--> Clean
+     +--> Transform
+     +--> Aggregate
+     +--> Promotion Analysis
+     +--> Rank
+     +--> Join / Enrich
+     +--> Export
 ```
 
 ---
 
-# Master Task Completion Summary
+## 2. Dataset
 
-## Master Task 1 — Environment Setup
+The primary dataset is `retail_events.csv`.
 
-The Docker-based big-data environment was started and validated.
+Each retail event represents one purchased product within a transaction.
 
-The required services included:
-
-- Apache HBase
-- Apache Hive
-- Apache Zeppelin
-- Hadoop supporting services
-- Docker networking and containers
-
-Apache Zeppelin was accessed through:
+Reference datasets include:
 
 ```text
-http://localhost:8888
+stores.csv
+products.csv
+promotions.csv
 ```
 
-**Status:** Completed
+The raw datasets are stored in:
+
+```text
+/user/hanpin/loblaw-retail/raw/
+```
+
+Main raw files:
+
+```text
+retail_events.csv
+stores.csv
+products.csv
+promotions.csv
+malformed_retail_events.csv
+data_dictionary.csv
+```
+
+The retail events dataset contains:
+
+```text
+38,143 valid retail event records
+```
 
 ---
 
-## Master Task 2 — Source Data Validation
-
-The source dataset and supporting CSV files were reviewed before ingestion.
-
-The validation included:
-
-- File availability
-- Column structure
-- Required fields
-- Numeric fields
-- Date and time formats
-- Product references
-- Store references
-- Missing values
-- Invalid records
-
-The main retail dataset contained:
+## 3. HDFS Structure
 
 ```text
-38,143 retail event records
-```
-
-**Status:** Completed
-
----
-
-## Master Task 3 — HBase Data Model and Row-Key Design
-
-An HBase data model was designed for retail-event storage.
-
-The design included:
-
-- HBase table structure
-- Column families
-- Retail-event attributes
-- Transaction information
-- Store and product information
-- Promotion and loyalty information
-
-A unique row-key design was used to identify each stored retail event and support transaction-level record retrieval.
-
-**Status:** Completed
-
----
-
-## Master Task 4 — HBase Table and Python Connection
-
-The HBase retail-events table was created using the HBase shell script:
-
-```text
-hbase/create_table.hbase
-```
-
-Python connectivity to HBase was established and tested successfully.
-
-The main Python ingestion file is:
-
-```text
-python/load_hbase.py
-```
-
-**Status:** Completed
-
----
-
-## Master Task 5 — HBase Data Ingestion
-
-Validated retail-event records were loaded into HBase using Python.
-
-### Ingestion Results
-
-- **Inserted records:** 38,143
-- **Rejected records during ingestion:** 0
-- **Ingestion errors:** 0
-
-The successful load confirmed that all valid source records were inserted into HBase.
-
-**Status:** Completed
-
----
-
-## Master Task 6 — HBase Validation
-
-The HBase table and stored records were validated using HBase shell commands.
-
-The validation included:
-
-- Table existence
-- Table structure
-- Column families
-- Record count
-- Sample rows
-- Selected transaction records
-- Stored column values
-
-The validation commands are stored in:
-
-```text
-hbase/validation_commands.hbase
-```
-
-**Status:** Completed
-
----
-
-## Master Task 7 — Hive–HBase Integration
-
-A Hive external table named:
-
-```text
-retail_events_hive
-```
-
-was connected to the HBase retail-events table.
-
-The Hive external-table definition is stored in:
-
-```text
-hive/create_external_table.hql
-```
-
-### Integration Validation
-
-- **Retail event records:** 38,143
-- **Distinct transactions:** 12,725
-
-An integration test record was inserted into HBase, queried successfully through Hive, and then removed.
-
-After cleanup, the final retail-event count returned to:
-
-```text
-38,143
-```
-
-**Status:** Completed
-
----
-
-## Master Task 8 — Core HiveQL Analytics
-
-Core HiveQL analysis was completed using the integrated Hive–HBase data.
-
-The analysis included:
-
-- Dataset validation
-- Revenue by store
-- Sales by category
-- Payment-method analysis
-- Loyalty analysis
-- Promotion impact
-- Top-product analysis
-
-The queries are stored in:
-
-```text
-hive/analytics.hql
-```
-
-**Status:** Completed
-
----
-
-## Master Task 9 — Advanced HiveQL Analytics
-
-Advanced HiveQL analysis was completed to provide deeper business insights.
-
-The analysis included:
-
-- Typed analytical view
-- Transaction-level summary
-- Regional performance
-- Hourly transaction patterns
-- Day-of-week performance
-- Category revenue contribution
-- Promotion performance by category
-- Store ranking
-- Store revenue deviation
-
-The transaction-level analytical result contained:
-
-```text
-12,725 transaction records
-```
-
-All core and advanced analytical queries were retained in:
-
-```text
-hive/analytics.hql
-```
-
-A separate advanced analytics SQL file was not required.
-
-**Status:** Completed
-
----
-
-## Master Task 10 — Python Statistical Analytics
-
-The Hive transaction summary was exported to:
-
-```text
-output/transaction_summary.csv
-```
-
-Python and Pandas were used to analyze:
-
-```text
-12,725 transaction-level records
-```
-
-The Python analysis included:
-
-- Data loading
-- Column validation
-- Numeric data-type validation
-- Missing-value validation
-- Descriptive statistics
-- Mean and median comparison
-- Standard deviation
-- Minimum and maximum values
-- Quartile analysis
-- Transaction-value frequency distribution
-- IQR-based outlier detection
-- Review of the highest-value transactions
-
-No missing values were found in:
-
-- `transaction_value`
-- `total_quantity`
-- `distinct_products`
-
-### IQR Outlier Results
-
-- **Q1:** $21.87
-- **Q3:** $57.85
-- **IQR:** $35.98
-- **Lower bound:** -$32.10
-- **Upper bound:** $111.82
-- **Potential outliers:** 216
-- **Outlier percentage:** 1.70%
-
-Because the dataset did not contain negative transaction values, the identified potential outliers were transactions above:
-
-```text
-$111.82
-```
-
-The potential outliers were retained because they may represent legitimate large purchases rather than data errors.
-
-The reusable statistical-analysis script is stored in:
-
-```text
-python/analytics.py
-```
-
-**Status:** Completed
-
----
-
-## Master Task 11 — Integrated Investigation, Findings and Recommendations
-
-HiveQL business analytics and Python statistical analytics were combined into an integrated investigation.
-
-The investigation covered:
-
-- Store performance
-- Regional performance
-- Transaction-hour performance
-- Day-of-week performance
-- Category performance
-- Promotion performance
-- Transaction-value distribution
-- Potential transaction outliers
-
-### Main Findings
-
-- **Highest-performing store:** ST-CAL-001
-- **ST-CAL-001 revenue:** $55,573.77
-- **ST-CAL-001 transactions:** 1,167
-- **ST-CAL-001 average transaction value:** $47.62
-- **Revenue above the store average:** 23.56%
-
-- **Average revenue per store:** $44,977.58
-
-- **Largest negative store deviation:** ST-KIT-001
-- **Deviation amount:** -$7,102.69
-- **Percentage deviation:** -15.79%
-
-- **Highest total regional revenue:** Central
-- **Highest average revenue per store:** Western
-- **Western average revenue per store:** $50,941.11
-
-- **Peak transaction hour:** 18:00
-- **Transactions at 18:00:** 1,809
-- **Revenue at 18:00:** $76,526.71
-- **Average transaction value at 18:00:** $42.30
-
-- **Highest transaction-count day:** Sunday
-- **Sunday transactions:** 2,106
-- **Sunday revenue:** $89,770.68
-
-- **Highest daily revenue:** Saturday
-- **Saturday revenue:** $90,570.71
-
-- **Highest promotional revenue category:** Grocery
-- **Grocery promotional revenue:** $3,962.47
-- **Promotional share of Grocery revenue:** 2.31%
-
-- **Potential transaction outliers:** 216
-- **Outlier percentage:** 1.70%
-
-### Main Recommendations
-
-1. Study the product mix and operating practices of ST-CAL-001.
-2. Investigate the causes of weaker performance at ST-KIT-001.
-3. Strengthen staffing and inventory availability during weekends and around 18:00.
-4. Evaluate promotions using revenue, margin, transaction count, and customer response.
-5. Investigate high-value transactions by store, region, category, loyalty status, and payment method.
-6. Use both aggregate business metrics and transaction-level statistical measures in future reporting.
-
-The final analysis report is stored in:
-
-```text
-docs/Final_Analysis_Report.md
-```
-
-**Status:** Completed
-
----
-
-## Master Task 12 — Final Documentation, Export and Submission Preparation
-
-The completed project files were organized for final review and GitHub submission.
-
-The final deliverables include:
-
-- Source datasets
-- Data-validation script
-- HBase table-creation script
-- HBase validation commands
-- Python HBase loader
-- Hive external-table script
-- HiveQL analytics
-- Python statistical-analysis script
-- Rejected-record output
-- Transaction-summary output
-- Apache Zeppelin notebook export
-- Final analysis report
-- Organized execution screenshots
-- Complete project README
-
-The Zeppelin notebook was exported as:
-
-```text
-zeppelin/Loblaw_HBase_Hive_Analytics.zpln
-```
-
-**Status:** Completed
-
----
-
-## Overall Completion Status
-
-| Component | Result |
-|---|---:|
-| Retail event records validated | 38,143 |
-| Retail event records inserted | 38,143 |
-| Unique transactions analyzed | 12,725 |
-| Ingestion errors | 0 |
-| Potential transaction outliers | 216 |
-| Outlier percentage | 1.70% |
-| Master Tasks completed | 12 / 12 |
-| Final project status | Complete |
-
----
-
-# Project Structure
-
-```text
-loblaw-hbase-hive-analytics/
-├── data/
-│   ├── data_dictionary.csv
-│   ├── malformed_retail_events.csv
+/user/hanpin/loblaw-retail/
+|
+├── raw/
+│   ├── retail_events.csv
+│   ├── stores.csv
 │   ├── products.csv
 │   ├── promotions.csv
-│   ├── retail_events.csv
-│   └── stores.csv
+│   ├── malformed_retail_events.csv
+│   └── data_dictionary.csv
 │
-├── docs/
-│   └── Final_Analysis_Report.md
+├── processed/
+│   ├── clean_retail_events
+│   ├── transformed_retail_events
+│   ├── aggregated_store_sales
+│   ├── aggregated_product_sales
+│   ├── promotion_analysis
+│   └── joined_retail_dataset
 │
-├── hbase/
-│   ├── create_table.hbase
-│   └── validation_commands.hbase
+├── analytics/
+│   ├── aggregated_category_sales
+│   ├── promotion_cogroup_summary
+│   └── rankings/
+│       ├── top_10_stores
+│       ├── top_10_products
+│       ├── bottom_10_products
+│       ├── highest_discounts
+│       └── highest_sales_categories
 │
-├── hive/
-│   ├── analytics.hql
-│   └── create_external_table.hql
-│
-├── output/
-│   ├── rejected_records.csv
-│   └── transaction_summary.csv
-│
-├── python/
-│   ├── analytics.py
-│   ├── load_hbase.py
-│   └── validate_data.py
-│
-├── screenshots/
-│   ├── advanced_analytics/
-│   ├── analytics/
-│   ├── final/
-│   ├── investigation/
-│   ├── python/
-│   ├── task01_environment/
-│   ├── task02_source_data/
-│   ├── task03_validation/
-│   ├── task04_malformed_data/
-│   ├── task05_hbase_model/
-│   ├── task06_row_key/
-│   ├── task07_hbase_table/
-│   ├── task08_hbase_connection/
-│   ├── task09_ingestion/
-│   ├── task10_hbase_validation/
-│   ├── task11_hive_integration/
-│   └── task12_integration_test/
-│
-├── zeppelin/
-│   └── Loblaw_HBase_Hive_Analytics.zpln
-│
-├── README.md
-└── .gitignore
+└── exports/
+    ├── clean_retail_events
+    ├── transformed_retail_events
+    ├── aggregated_store_sales
+    ├── aggregated_product_sales
+    ├── promotion_analysis
+    └── joined_retail_dataset
 ```
 
 ---
 
-# Main Project Files
-
-## Data Validation
+## 4. Pig Scripts
 
 ```text
-python/validate_data.py
+pig/
+├── explore_retail_events.pig
+├── clean_retail_events.pig
+├── transform_retail_events.pig
+├── aggregate_store_sales.pig
+├── aggregate_product_sales.pig
+├── promotion_analysis.pig
+├── ranking_analysis.pig
+├── join_retail_data.pig
+└── export_results.pig
 ```
-
-Validates source records and identifies malformed data.
-
-## HBase Table Creation
-
-```text
-hbase/create_table.hbase
-```
-
-Creates the HBase retail-events table and required column families.
-
-## HBase Validation
-
-```text
-hbase/validation_commands.hbase
-```
-
-Contains commands for validating the HBase table and stored records.
-
-## HBase Data Loader
-
-```text
-python/load_hbase.py
-```
-
-Connects to HBase and loads the validated retail-event records.
-
-## Hive External Table
-
-```text
-hive/create_external_table.hql
-```
-
-Creates the Hive external table connected to HBase.
-
-## HiveQL Analytics
-
-```text
-hive/analytics.hql
-```
-
-Contains the core and advanced HiveQL analytical queries.
-
-## Python Statistical Analytics
-
-```text
-python/analytics.py
-```
-
-Loads the exported transaction summary and performs descriptive statistics and IQR outlier analysis.
-
-## Transaction Summary
-
-```text
-output/transaction_summary.csv
-```
-
-Contains the transaction-level data exported from Hive for Python analysis.
-
-## Final Analysis Report
-
-```text
-docs/Final_Analysis_Report.md
-```
-
-Contains the integrated findings and business recommendations.
-
-## Zeppelin Notebook
-
-```text
-zeppelin/Loblaw_HBase_Hive_Analytics.zpln
-```
-
-Contains the completed Zeppelin notebook and execution results.
 
 ---
 
-# Running the Project
+# 5. Task Summary
+
+## Task 9 – Explore Retail Events
+
+Script:
+
+```text
+pig/explore_retail_events.pig
+```
+
+Purpose:
+
+- Load the retail dataset from HDFS
+- Define the Pig schema
+- Inspect sample records
+- Examine the relation structure
+
+Pig operations demonstrated include:
+
+```text
+LOAD
+DESCRIBE
+ILLUSTRATE
+LIMIT
+DUMP
+```
+
+---
+
+## Task 10 – Clean Retail Events
+
+Script:
+
+```text
+pig/clean_retail_events.pig
+```
+
+Purpose:
+
+- Remove the CSV header
+- Validate mandatory identifiers
+- Validate timestamps
+- Validate numeric fields
+- Convert fields to appropriate data types
+- Remove invalid values
+
+Output:
+
+```text
+/user/hanpin/loblaw-retail/processed/clean_retail_events
+```
+
+Result:
+
+```text
+38,143 cleaned records
+```
+
+---
+
+## Task 11 – Transform Retail Events
+
+Script:
+
+```text
+pig/transform_retail_events.pig
+```
+
+Derived attributes include:
+
+```text
+Hour of Day
+Day of Week
+Month
+Weekend Indicator
+Net Sales
+Discount Percentage
+Promotion Status
+```
+
+Example transformation:
+
+```text
+event_timestamp -> hour_of_day / day_of_week / month
+```
+
+Net sales is calculated from the retail event values.
+
+Output:
+
+```text
+/user/hanpin/loblaw-retail/processed/transformed_retail_events
+```
+
+Result:
+
+```text
+38,143 transformed records
+```
+
+---
+
+## Task 12 – Aggregate Retail Data
+
+Scripts:
+
+```text
+pig/aggregate_store_sales.pig
+pig/aggregate_product_sales.pig
+```
+
+### Store Aggregation
+
+Metrics include:
+
+- Total sales
+- Average sales
+- Transaction count
+- Quantity sold
+- Maximum event sales
+- Minimum event sales
+
+Output:
+
+```text
+/user/hanpin/loblaw-retail/processed/aggregated_store_sales
+```
+
+Result:
+
+```text
+12 stores
+```
+
+### Product Aggregation
+
+Metrics include:
+
+- Total quantity sold
+- Total revenue
+- Average selling price
+- Event count
+- Maximum selling price
+- Minimum selling price
+
+Output:
+
+```text
+/user/hanpin/loblaw-retail/processed/aggregated_product_sales
+```
+
+Result:
+
+```text
+45 products
+```
+
+### Category Aggregation
+
+Metrics include:
+
+- Total sales
+- Quantity sold
+- Average discount
+- Average discount percentage
+- Maximum discount
+- Minimum discount
+
+Output:
+
+```text
+/user/hanpin/loblaw-retail/analytics/aggregated_category_sales
+```
+
+Result:
+
+```text
+8 categories
+```
+
+Pig operators demonstrated include:
+
+```text
+GROUP
+COUNT
+SUM
+AVG
+MAX
+MIN
+```
+
+---
+
+## Task 13 – Analyze Promotional Activity
+
+Script:
+
+```text
+pig/promotion_analysis.pig
+```
+
+The analysis compares:
+
+```text
+Promotional
+vs.
+Non-Promotional
+```
+
+Metrics include:
+
+- Total sales
+- Quantity sold
+- Average selling price
+- Average discount
+- Event count
+
+Results:
+
+```text
+Promotional:
+Events = 1,106
+Total Sales = 17,410.39
+Average Selling Price = 12.53
+Average Discount = 3.21
+
+Non-Promotional:
+Events = 37,037
+Total Sales = 522,320.56
+Average Selling Price = 9.14
+Average Discount = 0.00
+```
+
+The dataset contains substantially fewer promotional events than non-promotional events. Promotional events show different purchasing patterns, including a higher average selling price, but the observational data does not establish that promotions caused these differences.
+
+Output:
+
+```text
+/user/hanpin/loblaw-retail/processed/promotion_analysis
+```
+
+---
+
+## Task 14 – Sort and Rank Business Results
+
+Script:
+
+```text
+pig/ranking_analysis.pig
+```
+
+Rankings produced:
+
+```text
+Top 10 Stores
+Top 10 Products
+Bottom 10 Products
+Highest Discounts
+Highest Sales Categories
+```
+
+Required Pig operators:
+
+```text
+ORDER
+LIMIT
+```
+
+Result counts:
+
+```text
+top_10_stores              = 10
+top_10_products            = 10
+bottom_10_products         = 10
+highest_discounts          = 10
+highest_sales_categories   = 8
+```
+
+Only eight sales categories exist in the dataset, so the highest-sales-category result contains eight records even though `LIMIT 10` is used.
+
+### Ranking Implementation Note
+
+The Docker environment uses:
+
+```text
+Apache Pig 0.17.0
+Hadoop 3.5.0
+```
+
+Global `ORDER BY` produced a MapReduce plan deserialization error in this environment.
+
+The ranking logic therefore uses:
+
+```text
+GROUP ALL
+   |
+   v
+Nested ORDER
+   |
+   v
+LIMIT
+```
+
+This preserves the required `ORDER` and `LIMIT` operations while successfully producing the ranking outputs.
+
+---
+
+## Task 15 – Join Retail Datasets
+
+Script:
+
+```text
+pig/join_retail_data.pig
+```
+
+The transformed retail events are enriched using:
+
+```text
+stores.csv
+products.csv
+promotions.csv
+```
+
+Join flow:
+
+```text
+Transformed Retail Events
+        |
+        +--> LEFT JOIN Stores
+        |
+        +--> LEFT JOIN Products
+        |
+        +--> LEFT JOIN Promotions
+        |
+        v
+Enriched Retail Dataset
+```
+
+`LEFT OUTER JOIN` is used so that valid retail events without promotions are preserved.
+
+The enriched dataset includes information such as:
+
+- Store reference information
+- Product catalogue information
+- Base unit price
+- Promotion name
+- Promotion dates
+- Promotion discount rate
+
+Required Pig operators demonstrated:
+
+```text
+JOIN
+COGROUP
+```
+
+The COGROUP analysis compares promotional retail events with the promotion reference dataset.
+
+Outputs:
+
+```text
+/user/hanpin/loblaw-retail/processed/joined_retail_dataset
+
+/user/hanpin/loblaw-retail/analytics/promotion_cogroup_summary
+```
+
+Results:
+
+```text
+Joined retail dataset       = 38,143 records
+Promotion COGROUP summary   = 8 records
+```
+
+The joined dataset retains the complete transformed retail-event record count.
+
+---
+
+## Task 16 – Export Processed Data
+
+Script:
+
+```text
+pig/export_results.pig
+```
+
+Required Pig operations:
+
+```text
+STORE
+PigStorage()
+```
+
+The completed datasets are exported from `/processed/` to `/exports/`.
+
+Exported datasets:
+
+```text
+clean_retail_events
+transformed_retail_events
+aggregated_store_sales
+aggregated_product_sales
+promotion_analysis
+joined_retail_dataset
+```
+
+Export validation:
+
+```text
+Dataset                      Processed   Exported
+-------------------------------------------------
+clean_retail_events             38143      38143
+transformed_retail_events       38143      38143
+aggregated_store_sales             12         12
+aggregated_product_sales           45         45
+promotion_analysis                  2          2
+joined_retail_dataset           38143      38143
+```
+
+All processed and exported record counts match.
+
+---
+
+# 6. Screenshots
+
+Evidence for each task is stored under:
+
+```text
+screenshots/pig/
+```
+
+Structure:
+
+```text
+screenshots/pig/
+|
+├── task09_explore/
+│   ├── task09_01_schema.png
+│   ├── task09_02_illustrate.png
+│   └── task09_03_sample_records.png
+│
+├── task10_clean/
+│   ├── task10_01_clean_execution.png
+│   └── task10_02_hdfs_clean_output.png
+│
+├── task11_transform/
+│   ├── task11_01_transformed_sample.png
+│   └── task11_02_hdfs_transformed_output.png
+│
+├── task12_aggregate/
+│   ├── task12_01_store_aggregation.png
+│   ├── task12_02_product_category_aggregation.png
+│   └── task12_03_hdfs_aggregated_outputs.png
+│
+├── task13_promotion/
+│   ├── task13_01_promotion_comparison.png
+│   └── task13_02_hdfs_promotion_output.png
+│
+├── task14_ranking/
+│   ├── task14_01_top_stores_products.png
+│   ├── task14_02_bottom_products_discounts.png
+│   └── task14_03_categories_ranking_counts.png
+│
+├── task15_join/
+│   ├── task15_01_joined_dataset_sample.png
+│   └── task15_02_join_cogroup_hdfs.png
+│
+└── task16_export/
+    ├── task16_01_export_success.png
+    └── task16_02_export_record_counts.png
+```
+
+---
+
+# 7. How to Run
 
 ## Prerequisites
 
-The project requires:
+The Big Data Docker environment must be running.
 
-- Docker Desktop
-- Docker Compose
-- Python 3
-- Pandas
-- Apache HBase environment
-- Apache Hive environment
-- Apache Zeppelin environment
-
----
-
-## Start the Docker Environment
-
-The Docker environment used for the project is located separately from this analytics project.
-
-Start the professor-provided environment before running the HBase or Hive components.
-
-Example:
-
-```bash
-cd ~/Desktop/Big_Data
-docker compose start
-```
-
-Check the running containers:
+Check the containers:
 
 ```bash
 docker compose ps
 ```
 
-Avoid using:
+The Pig container should be available as:
+
+```text
+pig
+```
+
+Check Pig:
 
 ```bash
-docker compose down -v
-```
-
-because container-local configuration changes and stored Docker volumes may be removed.
-
----
-
-## Access Apache Zeppelin
-
-Open:
-
-```text
-http://localhost:8888
-```
-
-The exported project notebook can be imported from:
-
-```text
-zeppelin/Loblaw_HBase_Hive_Analytics.zpln
+docker exec pig pig -version
 ```
 
 ---
 
-## Run the Data-Validation Script
+## Copy a Pig Script into the Container
 
-From the project root directory:
+Example:
 
 ```bash
-python3 python/validate_data.py
+docker cp \
+pig/clean_retail_events.pig \
+pig:/tmp/clean_retail_events.pig
 ```
 
 ---
 
-## Run the HBase Loader
+## Execute a Pig Script
 
-Ensure that the HBase Docker services are running.
-
-From the project root directory:
+Example:
 
 ```bash
-python3 python/load_hbase.py
+docker exec pig \
+pig \
+-Dpig.tmpfilecompression=false \
+-x mapreduce \
+/tmp/clean_retail_events.pig
 ```
+
+The project uses:
+
+```text
+-Dpig.tmpfilecompression=false
+```
+
+because the Pig container enables temporary-file compression without a configured compression codec.
 
 ---
 
-## Run the Python Statistical Analysis
-
-From the project root directory:
+## Example: Task 15
 
 ```bash
-python3 python/analytics.py
+docker cp \
+pig/join_retail_data.pig \
+pig:/tmp/join_retail_data.pig
 ```
 
-The script automatically locates:
+Run:
+
+```bash
+docker exec pig \
+pig \
+-Dpig.tmpfilecompression=false \
+-Dopt.multiquery=false \
+-x mapreduce \
+/tmp/join_retail_data.pig
+```
+
+---
+
+## Example: Task 16
+
+```bash
+docker cp \
+pig/export_results.pig \
+pig:/tmp/export_results.pig
+```
+
+Run:
+
+```bash
+docker exec pig \
+pig \
+-Dpig.tmpfilecompression=false \
+-Dopt.multiquery=false \
+-x mapreduce \
+/tmp/export_results.pig
+```
+
+---
+
+# 8. Verify HDFS Outputs
+
+List the processed datasets:
+
+```bash
+docker exec pig \
+hdfs dfs -ls \
+/user/hanpin/loblaw-retail/processed
+```
+
+List analytical outputs:
+
+```bash
+docker exec pig \
+hdfs dfs -ls -R \
+/user/hanpin/loblaw-retail/analytics
+```
+
+List exported datasets:
+
+```bash
+docker exec pig \
+hdfs dfs -ls \
+/user/hanpin/loblaw-retail/exports
+```
+
+Check a record count:
+
+```bash
+docker exec pig sh -lc \
+"hdfs dfs -cat /user/hanpin/loblaw-retail/processed/clean_retail_events/part-* | wc -l"
+```
+
+Expected result:
 
 ```text
-output/transaction_summary.csv
+38143
 ```
-
-It produces:
-
-- Record count
-- Descriptive statistics
-- Q1
-- Q3
-- IQR
-- Lower bound
-- Upper bound
-- Outlier count
-- Outlier percentage
 
 ---
 
-# HiveQL Analytics
+# 9. Environment Notes
 
-The HiveQL file is:
+Environment used:
 
 ```text
-hive/analytics.hql
+Apache Pig 0.17.0
+Hadoop 3.5.0
+Docker
+HDFS
+MapReduce
 ```
 
-It contains both core and advanced analysis.
-
-The analysis includes:
-
-- Revenue by store
-- Store ranking
-- Regional performance
-- Category contribution
-- Payment methods
-- Loyalty status
-- Promotion impact
-- Top products
-- Transaction summaries
-- Hourly patterns
-- Day-of-week patterns
-- Store revenue deviation
-
----
-
-# Screenshot Evidence
-
-All execution evidence is stored under:
+The following warning may appear:
 
 ```text
-screenshots/
+WARN util.NativeCodeLoader:
+Unable to load native-hadoop library for your platform...
+using builtin-java classes where applicable
 ```
 
-The screenshot folders document:
-
-- Environment setup
-- Source-data review
-- Data validation
-- Malformed-record handling
-- HBase model design
-- Row-key design
-- HBase table creation
-- Python-to-HBase connection
-- HBase data ingestion
-- HBase validation
-- Hive–HBase integration
-- Integration testing
-- Core HiveQL analytics
-- Advanced HiveQL analytics
-- Python statistical analytics
-- Integrated investigation
-- Final documentation
+This warning does not prevent the Pig jobs from completing successfully in the project environment.
 
 ---
 
-# Key Business Findings
+# 10. Final Results
 
-## Store Performance
+The Apache Pig pipeline successfully completed the full retail-data preparation workflow:
 
-ST-CAL-001 was the strongest-performing store:
+```text
+Raw Retail Data
+      |
+      v
+Exploration
+      |
+      v
+Cleaning
+      |
+      v
+Transformation
+      |
+      v
+Aggregation
+      |
+      v
+Promotion Analysis
+      |
+      v
+Business Ranking
+      |
+      v
+Dataset Enrichment
+      |
+      v
+Processed Data Export
+```
 
-- Revenue: **$55,573.77**
-- Transactions: **1,167**
-- Average transaction value: **$47.62**
-- Performance above average store revenue: **23.56%**
+Final validation confirms:
 
-ST-KIT-001 had the largest negative revenue deviation:
+```text
+Clean records              : 38,143
+Transformed records        : 38,143
+Stores aggregated          : 12
+Products aggregated        : 45
+Categories aggregated      : 8
+Promotion groups           : 2
+Joined retail records      : 38,143
+Exported joined records    : 38,143
+```
 
-- Deviation: **-$7,102.69**
-- Percentage deviation: **-15.79%**
-
----
-
-## Regional Performance
-
-- Highest total regional revenue: **Central**
-- Highest average revenue per store: **Western**
-- Western average revenue per store: **$50,941.11**
-
----
-
-## Time-Based Performance
-
-- Peak transaction hour: **18:00**
-- Transactions at 18:00: **1,809**
-- Revenue at 18:00: **$76,526.71**
-
-- Highest transaction-count day: **Sunday**
-- Sunday transactions: **2,106**
-
-- Highest daily revenue: **Saturday**
-- Saturday revenue: **$90,570.71**
-
----
-
-## Promotion Performance
-
-- Highest promotional revenue category: **Grocery**
-- Promotional revenue: **$3,962.47**
-- Promotional share of Grocery revenue: **2.31%**
-
-Most Grocery revenue was generated without promotions.
-
----
-
-## Transaction Distribution
-
-The transaction-value distribution was right-skewed.
-
-Most transactions occurred in the lower and middle transaction-value ranges. A smaller number of transactions occurred in the highest-value ranges.
-
-High-value transactions can increase the mean, so both the mean and median should be considered when describing typical customer spending.
-
----
-
-# Business Recommendations
-
-1. Review the successful operations and product mix of ST-CAL-001.
-2. Investigate performance issues at ST-KIT-001.
-3. Increase staffing and inventory readiness during weekends and around 18:00.
-4. Evaluate promotion performance using revenue, margins, transaction counts, and customer response.
-5. Investigate high-value transactions by store, region, category, loyalty status, and payment method.
-6. Use revenue totals, averages, medians, deviations, and transaction distributions together when making decisions.
-
----
-
-# Final Submission Checklist
-
-- [x] Source dataset included
-- [x] Data-validation script included
-- [x] Malformed-record output included
-- [x] HBase table-creation script included
-- [x] HBase validation commands included
-- [x] Python HBase loader included
-- [x] Hive external-table script included
-- [x] Core and advanced HiveQL analytics included
-- [x] Transaction summary CSV included
-- [x] Python statistical-analysis script included
-- [x] Zeppelin notebook exported
-- [x] Final analysis report included
-- [x] Master Tasks 1–12 documented
-- [x] Screenshots organized by task
-- [x] Final Master Task 12 screenshots included
-- [x] README completed
-- [x] GitHub repository created
-- [x] Complete project pushed to GitHub
-- [x] GitHub repository screenshot included
-- [x] Final changes committed and pushed
-- [x] Git working tree confirmed clean
-
----
-
-# Conclusion
-
-This project demonstrates a complete big-data retail analytics workflow using HBase, Hive, Python, Pandas, Docker, and Apache Zeppelin.
-
-HBase provided scalable event-level data storage. HiveQL provided aggregated business analysis across stores, regions, categories, promotions, and transaction periods. Python added transaction-level statistical analysis and IQR-based outlier detection.
-
-The combined investigation identified meaningful performance differences across stores, regions, time periods, promotion activity, and transaction values.
-
-The final results support practical decisions related to store operations, staffing, inventory planning, promotion evaluation, and high-value customer behavior.
+The final joined dataset preserves all valid transformed retail events, and all exported datasets match their corresponding processed record counts.
